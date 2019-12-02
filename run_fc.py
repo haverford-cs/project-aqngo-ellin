@@ -1,5 +1,5 @@
 """
-Contents:
+Contents: Train and test fully connected neural network
 Authors: Jason Ngo and Emily Lin
 Date:
 """
@@ -14,6 +14,7 @@ from tensorflow import GradientTape
 #imports from our libraries
 from fc_nn import FCmodel
 
+#see lab 8
 def main():
     model = FCmodel()
     model.compile(loss='mse',
