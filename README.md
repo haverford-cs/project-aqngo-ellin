@@ -1,8 +1,5 @@
 # Weather Data Project
 
-## Dataset
-
-
 ## Lab Notebook
 
 ### References
@@ -10,6 +7,10 @@
 - SVR: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html
 - SVR example: https://scikit-learn.org/stable/auto_examples/svm/plot_svm_regression.html#sphx-glr-auto-examples-svm-plot-svm-regression-py
 - FC for regression: https://www.tensorflow.org/tutorials/keras/regression
+
+### 12/5/2019 (1 hr)
+- Jason: Converting training data to contain data for 2 days.
+- Emily: Plotting SVR results for different kernels.
 
 ### 12/2/2019 (2 hrs)
 - Jason: Extract data for one station
