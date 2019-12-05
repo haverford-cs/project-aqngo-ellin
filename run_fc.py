@@ -1,5 +1,5 @@
 """
-Contents:
+Contents: Train and test fully connected neural network
 Authors: Jason Ngo and Emily Lin
 Date:
 """
@@ -16,6 +16,7 @@ from tensorflow import GradientTape
 #imports from our libraries
 from fc_nn import FCmodel
 
+#see lab 8
 def main():
     raw_dataset = pd.read_csv("ghcnd_hcn/USC00447338_rem.csv")
     dataset = raw_dataset.copy()

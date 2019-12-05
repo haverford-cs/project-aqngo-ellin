@@ -1,5 +1,5 @@
 """
-Contents:
+Contents: Fully connected neural network class
 Authors: Jason Ngo and Emily Lin
 Date:
 """
