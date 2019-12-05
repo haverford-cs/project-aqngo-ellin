@@ -6,6 +6,8 @@ Date:
 
 #imports from python libraries
 import numpy as np
+import pandas as pd
+
 from tensorflow.keras.losses import SparseCategoricalCrossentropy
 #from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.optimizers import RMSprop
@@ -16,6 +18,16 @@ from fc_nn import FCmodel
 
 #see lab 8
 def main():
+    raw_dataset = pd.read_csv("ghcnd_hcn/USC00447338_rem.csv")
+    dataset = raw_dataset.copy()
+    print(dataset.tail())
+    train_dataset = dataset.sample(frac=0.8, random_state=0)
+    test_dataset = dataset.drop(train_dataset.index)
+    train_labels = train_dataset.pop('PRCP')
+    test_labels = test_dataset.pop('PRCP')
+    print(test_labels.shape)
+
+
     model = FCmodel()
     model.compile(loss='mse',
             optimizer=optimizer,
