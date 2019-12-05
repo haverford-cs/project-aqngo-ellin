@@ -8,7 +8,7 @@ Date:
 import numpy as np
 
 from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras import model
+from tensorflow.keras import Model
 from tensorflow.keras.activations import relu, softmax
 
 class FCmodel(Model):

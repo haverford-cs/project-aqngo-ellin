@@ -1,6 +1,9 @@
 .ipynb_checkpoints/
-**/*.ipynb
+# **/*.ipynb
 csv/
 merge/
 all.csv
 **/*.dly
+**/*.pyc
+__pycache__/
+ghcnd_hcn/*.ipynb
