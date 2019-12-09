@@ -7,3 +7,4 @@ all.csv
 **/*.pyc
 __pycache__/
 ghcnd_hcn/*.ipynb
+ghcnd_hcn/pair/
