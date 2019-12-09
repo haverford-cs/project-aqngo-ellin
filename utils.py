@@ -9,14 +9,17 @@ from sklearn.model_selection import train_test_split
 
 def one_station(file, category):
     data = pd.read_csv(file)
+    data = data.drop(['STATION', 'LON', 'LAT', 'ELEV'], axis=1)
     y = to_categorical(data)
     #y = data.PRCP
     X = data.drop(category, axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    print(X_train.shape)
+    print(X_test.shape)
     return X_train, X_test, y_train, y_test
 
 def to_categorical(data):
-    precip = data.PRCP
+    precip = data.PRCP2
     converted = list()
     for x in precip:
         if x == 0:
