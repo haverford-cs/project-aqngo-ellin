@@ -7,6 +7,11 @@
 - SVR: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html
 - SVR example: https://scikit-learn.org/stable/auto_examples/svm/plot_svm_regression.html#sphx-glr-auto-examples-svm-plot-svm-regression-py
 - FC for regression: https://www.tensorflow.org/tutorials/keras/regression
+- Confusion matrix: #add link
+
+### 12/9/2019 (2 hrs)
+- Jason: Pair training data.
+- Emily: Convert labels from continuous to categorical. Output confusion matrix.
 
 ### 12/5/2019 (1 hr)
 - Jason: Converting training data to contain data for 2 days.
