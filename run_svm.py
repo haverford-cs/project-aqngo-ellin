@@ -18,17 +18,18 @@ from utils import one_station
 
 #see lab 7
 def main():
-    file = 'ghcnd_hcn/USC00057936_CO_pair_data.csv' #paired days
+    file = 'ghcnd_hcn/USC00057936_unpaired.csv'
+    #file = 'ghcnd_hcn/USC00057936_CO_pair_data.csv' #paired days
     #file = 'ghcnd_hcn/USC00447338_rem.csv'
-    category = 'PRCP2'
+    category = 'PRCP' #'PRCP2' for unpaired
     #one_station(file, category) #test conversion to categorical
     X_train, X_test, y_train, y_test = one_station(file, category)
     #fit regression models for SVC
     svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1) #categorical
     svcs = [svc_rbf]
-    svc_plot(svcs, X_train, X_test, y_train, y_test)
+    svc_acc(svcs, X_train, X_test, y_train, y_test)
 
-    """ClassPredictionError
+    """
     #fit regression models for SVR
     svr_rbf = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=.1)
     svr_lin = LinearSVR(C=100)
@@ -36,7 +37,7 @@ def main():
     svrs = [svr_rbf] #[svr_rbf, svr_lin, svr_poly]
     svr_plot(svrs, X_train[:20], X_test[:2], y_train[:20], y_test[:2])
     """
-def svc_plot(svcs, X_train, X_test, y_train, y_test):
+def svc_acc(svcs, X_train, X_test, y_train, y_test):
     print('svc plot')
     svc = svcs[0]
     y_pred = svc.fit(X_train, y_train).predict(X_test)
@@ -56,24 +57,6 @@ def svc_plot(svcs, X_train, X_test, y_train, y_test):
  [  0   0   0   0   0   0   0   0  15   0]
  [  0   0   0   0   0   0   0   0   0  34]]
 """
-
-def svc_plot1(svcs, X_train, X_test, y_train, y_test):
-    print('plotting')
-    lw = 2
-    kernel_label = ['RBF'] #['RBF', 'Linear', 'Polynomial']
-    model_color = ['m', 'c', 'g']
-
-    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(15, 10), sharey=True)
-    for ix, svc in enumerate(svcs):
-        sns.catplot(y_test, svc.fit(X_train, y_train).predict(X_test), color=model_color[ix], lw=lw,
-                      label='{} model'.format(kernel_label[ix]))
-        axes[ix].legend(loc='upper center', bbox_to_anchor=(0.5, 1.1),
-                        ncol=1, fancybox=True, shadow=True)
-
-        fig.text(0.5, 0.04, 'Actual', ha='center', va='center')
-        fig.text(0.06, 0.5, 'Predicted', ha='center', va='center', rotation='vertical')
-        fig.suptitle("Support Vector Regression", fontsize=14)
-        plt.show()
 
 def svr_plot(svrs, X_train, X_test, y_train, y_test):
     print('plotting')
