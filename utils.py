@@ -19,7 +19,7 @@ def one_station(file, category):
     return X_train, X_test, y_train, y_test
 
 def to_categorical(data):
-    precip = data.PRCP2
+    precip = data.PRCP #PRCP2 for paired data
     converted = list()
     for x in precip:
         if x == 0:
