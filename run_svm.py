@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from sklearn.svm import SVR, LinearSVR, SVC
+from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 from sklearn import utils
 
@@ -27,7 +27,7 @@ def main():
 
     if ONE_STATION:
         print("Run SVM on one station")
-        X_train, X_test, y_train, y_test = one_station_split(
+        X_train, X_test, y_train, y_test, bins = one_station_split(
             df, 'USC00057936', category)
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
@@ -35,19 +35,15 @@ def main():
             df, 'USC00057936', category)
 
     # fit regression models for SVC
-    svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1)  # categorical
-    svcs = [svc_rbf]
-    svc_acc(svcs, X_train, X_test, y_train, y_test)
+    svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1).fit(X_train, y_train)
+    svc_acc(svc_rbf, X_train, X_test, y_train, y_test, bins)
 
 
-def svc_acc(svcs, X_train, X_test, y_train, y_test):
+def svc_acc(svc, X_train, X_test, y_train, y_test, bins):
     print('Support Vector Plot')
-    svc = svcs[0]
-    y_pred = svc.fit(X_train, y_train).predict(X_test)
-    results = confusion_matrix(y_test, y_pred)  # normalize='true')
-    print(results)
-    return results
-
+    y_pred = svc.predict(X_test)
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    print(conf_matrix)
 
 if __name__ == "__main__":
     main()
