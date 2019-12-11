@@ -2,12 +2,22 @@
 
 ## Lab Notebook
 
+### Requirements
+sklearn v 0.22
+matplolib v 3.1.2
+
 ### References
 - Data splitting: https://medium.com/themlblog/splitting-csv-into-train-and-test-data-1407a063dd74
 - SVR: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html
 - SVR example: https://scikit-learn.org/stable/auto_examples/svm/plot_svm_regression.html#sphx-glr-auto-examples-svm-plot-svm-regression-py
 - FC for regression: https://www.tensorflow.org/tutorials/keras/regression
-- Confusion matrix: #add link
+- Confusion matrix: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
+- Confusion matrix plot: https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html#sphx-glr-auto-examples-model-selection-plot-confusion-matrix-py
+- Heatmap: https://getaravind.com/blog/confusion-matrix-seaborn-heatmap/
+
+### 12/11/2019 (2 hrs)
+- Jason:
+- Emily: Generate confusion matrix and heat maps for one station svc.
 
 ### 12/9/2019 (2 hrs)
 - Jason: Pair training data.
@@ -27,4 +37,5 @@
 
 ### 11/25/2019 (2.5 hrs)
 - Met with Sara to talk about the proposal
+- Jason:
 - Emily: Set up starter files for Support Vector Regression and Neural Network
