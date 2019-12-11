@@ -8,7 +8,8 @@ Date:
 import numpy as np
 import pandas as pd
 
-from sklearn.svm import SVR, LinearSVR, SVC
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix
 from sklearn import utils
 
 # imports from our libraries
@@ -25,7 +26,7 @@ def main():
 
     if ONE_STATION:
         print("Run SVM on one station")
-        X_train, X_test, y_train, y_test = one_station_split(
+        X_train, X_test, y_train, y_test, bins = one_station_split(
             df, 'USC00057936', category)
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")

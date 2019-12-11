@@ -7,6 +7,7 @@ Date:
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 
@@ -20,7 +21,7 @@ def one_station_split(df, station, category):
     X = df.drop(category, axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, bins
 
 def nearby_station_split(df, station, category):
     # TODO: WORK ON THIS
