@@ -13,8 +13,7 @@ from sklearn.model_selection import train_test_split
 def one_station_split(df, station, category):
     # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
-
-    df, bins = clean_data(df, category)   # convert continuous values to bins
+    df = clean_data(df, category)   # convert continuous values to bins
 
     y = df[category]
     X = df.drop(category, axis=1)
@@ -28,8 +27,7 @@ def nearby_station_split(df, station, category):
 
 
 def clean_data(df, category):
-    df[category] = pd.qcut(df[category], q=50, duplicates='drop').astype(str)
-    bins = df[category].unique()
+    df[category] = pd.qcut(df[category], q=45, duplicates='drop').astype(str)
     if 'STATION' in df.columns:
         df = df.drop(['STATION'], axis=1)
-    return df, bins
+    return df
