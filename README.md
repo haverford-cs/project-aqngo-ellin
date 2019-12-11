@@ -17,7 +17,7 @@ matplolib v 3.1.2
 
 ### 12/11/2019 (2 hrs)
 - Jason:
-- Emily: Generate confusion matrix and heat maps for one station svc.
+- Emily: Code to generate confusion matrices and heat maps.
 
 ### 12/9/2019 (2 hrs)
 - Jason: Pair training data.
