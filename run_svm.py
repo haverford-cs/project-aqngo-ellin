@@ -7,11 +7,8 @@ Date:
 # imports from python libraries
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from sklearn.svm import SVR, LinearSVR, SVC
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn import utils
 
 # imports from our libraries
@@ -36,41 +33,8 @@ def main():
             df, 'USC00057936', category)
 
     # fit regression models for SVC
-    svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1)  # categorical
-    svcs = [svc_rbf]
-    matrix = svc_matrix(svcs, X_train, X_test, y_train, y_test)
-    svc_heat(svcs, X_train, X_test, y_train, y_test)
-
-
-def svc_matrix(svcs, X_train, X_test, y_train, y_test):
-    print('Support Vector Confusion Matrix')
-    svc = svcs[0]
-    y_pred = svc.fit(X_train, y_train).predict(X_test)
-    results = confusion_matrix(y_test, y_pred)  # normalize='true')
-    return results
-
-def svc_heat(svcs, X_train, X_test, y_train, y_test):
-    svc = svcs[0]
-    classifier = svc.fit(X_train, y_train)
-    class_names = (set(y_test))
-    titles_options = [#("Confusion matrix, without normalization", None),
-                  ("Normalized Confusion Matrix", 'true')]
-    for title, normalize in titles_options:
-        disp = plot_confusion_matrix(classifier, X_test, y_test,
-                                     display_labels=class_names,
-                                     cmap=plt.cm.Blues,
-                                     normalize=normalize)
-        disp.ax_.set_title(title)
-        print(title)
-        print(disp.confusion_matrix
-    plt.show()
-
-def svc_plot(matrix):
-    sns.heatmap(matrix, annot=True, cbar=False)
-    plt.ylabel('True Label')
-    plt.xlabel('Predicted Label')
-    plt.title('Confusion Matrix')
-    plt.show()
+    svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1).fit(X_train, y_train)
+    heatmap(svc_rbf, X_test, y_test)
 
 
 if __name__ == "__main__":
