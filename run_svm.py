@@ -27,7 +27,7 @@ def main():
 
     if ONE_STATION:
         print("Run SVM on one station")
-        X_train, X_test, y_train, y_test, bins = one_station_split(
+        X_train, X_test, y_train, y_test, bins, df = one_station_split(
             df, 'USC00057936', category)
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
