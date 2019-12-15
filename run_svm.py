@@ -22,7 +22,7 @@ def main():
 
     category = "PRCP2"
     # Toggle these values to test different functions
-    ONE_STATION, NEARBY_STATION = True, False
+    ONE_STATION, NEARBY_STATION = False, True
 
     if ONE_STATION:
         print("Run SVM on one station")
@@ -31,7 +31,7 @@ def main():
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
         X_train, X_test, y_train, y_test = nearby_station_split(
-            df, 'USC00057936', category)
+            df, 'USC00057936', 'Precipitation')
 
     # fit regression models for SVC
     svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1).fit(X_train, y_train)

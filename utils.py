@@ -38,7 +38,7 @@ def nearby_station_split(df, station, category):
 
 def get_k_nearest_stations(df, station, k):
     distance_arr = []
-    test_df = df.query("STATION == 'USC00057936'")
+    test_df = df.query("STATION == '{}'".format(station))
     test_location = np.array([test_df[element].values[0]
                               for element in ['LON', 'LAT', 'ELEV']])
     for station_id, station_name in enumerate(df['STATION'].unique()):
