@@ -5,6 +5,7 @@
 ### Requirements
 sklearn v 0.22
 matplolib v 3.1.2
+#pip3 install git+https://github.com/tensorflow/docs --user
 
 ### References
 - Data splitting: https://medium.com/themlblog/splitting-csv-into-train-and-test-data-1407a063dd74
@@ -16,9 +17,14 @@ matplolib v 3.1.2
 - Heatmap: https://getaravind.com/blog/confusion-matrix-seaborn-heatmap/
 - Accuracy score: https://github.com/scikit-learn/scikit-learn/blob/bf24c7e3d/sklearn/base.py#L344
 
+
+### 12/17/2019 (2 hrs)
+- Jason:
+- Emily: Determine best hyperparameters for SVC for nearby stations; confusion matrix for one and nearby stations.
+
 ### 12/15/2019 (2 hrs)
 - Jason:
-- Emily: Determine best hyperparameters for SVC for one station and nearby stations;
+- Emily: Determine best hyperparameters for SVC for one station;
 
 ### 12/11/2019 (2 hrs)
 - Jason:
