@@ -26,7 +26,7 @@ def main():
         df = df.drop(['LON', 'LAT', 'ELEV'], axis=1)
         df = df.sample(frac=1).reset_index(drop=True)
         X_train, X_test, y_train, y_test, map_dict = one_station_split(
-            df, 'USC00057936', 'PRCP2', True)
+            df, 'USC00057936', 'PRCP2')
 
     train_stats = X_train.describe()
     train_stats = train_stats.transpose()
@@ -63,6 +63,7 @@ def main():
     od = OrderedDict(sorted(map_dict.items()))
     class_names = [str(entry) for entry in list(od.values())]
     print_confusion_matrix(normed_matrix, class_names)
+
 
 
 def build_model(num_classes):
