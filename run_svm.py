@@ -12,6 +12,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import confusion_matrix
+from collections import OrderedDict
 
 # imports from our libraries
 from utils import *
@@ -28,7 +29,7 @@ def main():
     if ONE_STATION:
         print("Run SVM on one station")
         X_train, X_test, y_train, y_test, map_dict = one_station_split(
-            df, 'USC00057936', category, True)
+            df, 'USC00057936', category)
         #X,y = one_station(df, 'USC00057936', category)
         #{'C': 10, 'gamma': 0.001}
     elif NEARBY_STATION:
