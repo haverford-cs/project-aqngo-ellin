@@ -27,11 +27,11 @@ def main():
     if ONE_STATION:
         print("Run SVM on one station")
         X_train, X_test, y_train, y_test, bins = one_station_split(
-            df, 'USC00057936', category)
+            df, 'USC00057936', category, False)
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
         X_train, X_test, y_train, y_test = nearby_station_split(
-            df, 'USC00057936', 'Precipitation')
+            df, 'USC00057936', 'Precipitation', False)
 
     # fit regression models for SVC
     svc_rbf = SVC(kernel='rbf', C=100, gamma=0.1).fit(X_train, y_train)

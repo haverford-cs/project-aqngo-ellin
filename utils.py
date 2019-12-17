@@ -13,16 +13,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 
 
-def one_station_split(df, station, category):
+def one_station_split(df, station, category, isFC):
     # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
-    df = clean_data(df, category)   # convert continuous values to bins
-
+    # convert continuous values to bins
+    if isFC:
+        df, map_dict = clean_data(df, category, True)
+    else:
+        df = clean_data(df, category)
     y = df[category]
     X = df.drop(category, axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
-    return X_train, X_test, y_train, y_test, bins
+    return X_train, X_test, y_train, y_test, map_dict
 
 
 def nearby_station_split(df, station, category):
@@ -81,11 +84,20 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     return nearby_final
 
 
-def clean_data(df, category):
-    df[category] = pd.qcut(df[category], q=45, duplicates='drop').astype(str)
+def clean_data(df, category, FC=False):
     if 'STATION' in df.columns:
         df = df.drop(['STATION'], axis=1)
-    return df
+
+    if FC:
+        df[category] = pd.qcut(
+            df[category], q=45, duplicates='drop').astype('category')
+        map_dict = dict(zip(df[category].cat.codes, df[category]))
+        df[category] = df[category].cat.codes
+        return df, map_dict
+    else:
+        df[category] = pd.qcut(
+            df[category], q=45, duplicates='drop').astype(str)
+        return df
 
 
 """
@@ -125,4 +137,57 @@ def heatmap2(matrix):
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
     plt.title('Confusion Matrix')
+    plt.show()
+
+
+def train_normalize(x, train_stats):
+    return (x - train_stats['mean']) / train_stats['std']
+
+
+def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fontsize=14):
+    """Prints a confusion matrix, as returned by sklearn.metrics.confusion_matrix, as a heatmap.
+
+    Arguments
+    ---------
+    confusion_matrix: numpy.ndarray
+        The numpy.ndarray object returned from a call to sklearn.metrics.confusion_matrix. 
+        Similarly constructed ndarrays can also be used.
+    class_names: list
+        An ordered list of class names, in the order they index the given confusion matrix.
+    figsize: tuple
+        A 2-long tuple, the first value determining the horizontal size of the ouputted figure,
+        the second determining the vertical size. Defaults to (10,7).
+    fontsize: int
+        Font size for axes labels. Defaults to 14.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The resulting confusion matrix figure
+    """
+    sns.set()
+    df_cm = pd.DataFrame(
+        confusion_matrix, index=class_names, columns=class_names,
+    )
+    fig = plt.figure(figsize=figsize, dpi=200)
+    try:
+        heatmap = sns.heatmap(df_cm, cmap=plt.cm.Blues, annot=True)
+    except ValueError:
+        raise ValueError("Confusion matrix values must be integers.")
+    heatmap.yaxis.set_ticklabels(
+        heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=fontsize)
+    heatmap.xaxis.set_ticklabels(
+        heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=fontsize)
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.show()
+    
+def plot_train_validation_curve(history):
+    fig = plt.figure(figsize=(14, 8), dpi=200)
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('FC Training Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
     plt.show()
