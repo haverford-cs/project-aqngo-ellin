@@ -27,13 +27,13 @@ def one_station_split(df, station, category):
 def nearby_station_split(df, station, category):
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
     nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
-    nearby_df = clean_data(clean_data, category)
+    nearby_df, map_dict = clean_data1(nearby_df, category) #modified clean data func
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, map_dict
 
 #the below X,y parsing is for cross validation
 def one_station(df, station, category): #with cross validation
@@ -111,6 +111,13 @@ def clean_data(df, category):
     df[category] = df[category].cat.codes
     return df, map_dict
 
+def clean_data1(df, category): #for nearby stations, don't remove station
+    df[category] = pd.qcut(
+        df[category], q=45, duplicates='drop').astype('category')
+    map_dict = dict(zip(df[category].cat.codes, df[category]))
+    df[category] = df[category].cat.codes
+    return df, map_dict
+
 
 """
 For evaluation
@@ -181,7 +188,7 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fonts
     df_cm = pd.DataFrame(
         confusion_matrix, index=class_names, columns=class_names,
     )
-    fig = plt.figure(figsize=figsize, dpi=200)
+    fig = plt.figure(figsize=figsize, dpi=65)
     try:
         heatmap = sns.heatmap(df_cm, cmap=plt.cm.Blues, annot=True)
     except ValueError:
