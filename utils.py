@@ -13,19 +13,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn import utils
 
-def one_station_split(df, station, category, isFC=False):
+def one_station_split(df, station, category):
     # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
     # convert continuous values to bins
-    if isFC:
-        df, map_dict = clean_data(df, category, True)
-    else:
-        df = clean_data(df, category)
+    df, map_dict = clean_data(df, category)
     y = df[category]
     X = df.drop(category, axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, map_dict
 
 def nearby_station_split(df, station, category):
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
@@ -104,20 +101,15 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     return nearby_final
 
 
-def clean_data(df, category, FC=False):
+def clean_data(df, category):
     if 'STATION' in df.columns:
         df = df.drop(['STATION'], axis=1)
 
-    if FC:
-        df[category] = pd.qcut(
-            df[category], q=45, duplicates='drop').astype('category')
-        map_dict = dict(zip(df[category].cat.codes, df[category]))
-        df[category] = df[category].cat.codes
-        return df, map_dict
-    else:
-        df[category] = pd.qcut(
-            df[category], q=45, duplicates='drop').astype(str)
-        return df
+    df[category] = pd.qcut(
+        df[category], q=45, duplicates='drop').astype('category')
+    map_dict = dict(zip(df[category].cat.codes, df[category]))
+    df[category] = df[category].cat.codes
+    return df, map_dict
 
 
 """
@@ -170,7 +162,7 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fonts
     Arguments
     ---------
     confusion_matrix: numpy.ndarray
-        The numpy.ndarray object returned from a call to sklearn.metrics.confusion_matrix. 
+        The numpy.ndarray object returned from a call to sklearn.metrics.confusion_matrix.
         Similarly constructed ndarrays can also be used.
     class_names: list
         An ordered list of class names, in the order they index the given confusion matrix.
@@ -200,6 +192,7 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fonts
         heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=fontsize)
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
+    plt.title('Normalized Confusion Matrix')
     plt.show()
 
 def plot_train_validation_curve(history):
