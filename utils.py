@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+from sklearn import utils
 
-
-def one_station_split(df, station, category, isFC):
+def one_station_split(df, station, category, isFC=False):
     # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
     # convert continuous values to bins
@@ -25,8 +25,7 @@ def one_station_split(df, station, category, isFC):
     X = df.drop(category, axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
-    return X_train, X_test, y_train, y_test, map_dict
-
+    return X_train, X_test, y_train, y_test
 
 def nearby_station_split(df, station, category):
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
@@ -37,6 +36,25 @@ def nearby_station_split(df, station, category):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test
+
+#the below X,y parsing is for cross validation
+def one_station(df, station, category): #with cross validation
+    # y = to_categorical(df, category)
+    df = df.query("STATION == '{}'".format(station))
+    df = clean_data(df, category)   # convert continuous values to bins
+
+    y = df[category]
+    X = df.drop(category, axis=1)
+    X,y = utils.shuffle(X,y)
+    return X,y
+
+def nearby_station(df, station, category):
+    k_nearest_stations = get_k_nearest_stations(df, station, 3)
+    nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
+    y = nearby_df[category]
+    X = nearby_df.drop(category, axis=1)
+    X,y = utils.shuffle(X,y)
+    return X,y
 
 
 def get_k_nearest_stations(df, station, k):
@@ -181,7 +199,7 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fonts
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    
+
 def plot_train_validation_curve(history):
     fig = plt.figure(figsize=(14, 8), dpi=200)
     plt.plot(history.history['accuracy'])

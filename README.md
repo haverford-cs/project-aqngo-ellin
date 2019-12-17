@@ -14,10 +14,15 @@ matplolib v 3.1.2
 - Confusion matrix: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
 - Confusion matrix plot: https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html#sphx-glr-auto-examples-model-selection-plot-confusion-matrix-py
 - Heatmap: https://getaravind.com/blog/confusion-matrix-seaborn-heatmap/
+- Accuracy score: https://github.com/scikit-learn/scikit-learn/blob/bf24c7e3d/sklearn/base.py#L344
+
+### 12/15/2019 (2 hrs)
+- Jason:
+- Emily: Determine best hyperparameters for SVC for one station and nearby stations;
 
 ### 12/11/2019 (2 hrs)
 - Jason:
-- Emily: Code to generate confusion matrices and heat maps.
+- Emily: Code to generate confusion matrices and heatmaps.
 
 ### 12/9/2019 (2 hrs)
 - Jason: Pair training data.
