@@ -33,22 +33,24 @@ def main():
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
         X_train, X_test, y_train, y_test = nearby_station_split(
-           df, 'USC00057936', 'Precipitation')
-        # X,y = nearby_station(df, 'USC00057936', category)
-        #{'C': 1, 'gamma': 0.001} and {'C': 10, 'gamma': 0.0001}
+            df, 'USC00057936', 'Precipitation')
+        #X,y = nearby_station(df, 'USC00057936', category)
+        #{'C': 1, 'gamma': 0.001}
     elif ALL_STATIONS:
         #TODO
         pass
 
     # fit regression models for SVC
+    #accuracy(X.values, y.values) #get best hyperparameters
     #params = accuracy(X.values, y.values)
     #svc_clf = SVC(params)
-    svc_clf = SVC(kernel='rbf', C=10, gamma=0.0001).fit(X_train, y_train)
+
+    svc_clf = SVC(kernel='rbf', C=1, gamma=0.001).fit(X_train, y_train)
     train_score = accuracy_score(y_train, svc_clf.predict(X_train), sample_weight=None)
     test_score = accuracy_score(y_test, svc_clf.predict(X_test), sample_weight=None)
     print(train_score)
     print(test_score)
-    #heatmap(svc_clf, X_test, y_test)
+    heatmap(svc_clf, X_test, y_test)
 
 
 #from lab 7
