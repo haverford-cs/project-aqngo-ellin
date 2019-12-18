@@ -14,12 +14,12 @@ from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn import utils
 
 def one_station_split(df, station, category):
-    # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
     # convert continuous values to bins
     df, map_dict = clean_data(df, category)
     y = df[category]
     X = df.drop(category, axis=1)
+    X,y = utils.shuffle(X,y)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test, map_dict
@@ -30,26 +30,26 @@ def nearby_station_split(df, station, category):
     nearby_df, map_dict = clean_data1(nearby_df, category) #modified clean data func
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
-
+    X,y = utils.shuffle(X,y)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test, map_dict
 
 #the below X,y parsing is for cross validation
 def one_station(df, station, category): #with cross validation
-    # y = to_categorical(df, category)
     df = df.query("STATION == '{}'".format(station))
-    df = clean_data(df, category)   # convert continuous values to bins
+    df, map_dict = clean_data(df, category)   # convert continuous values to bins
 
     y = df[category]
     X = df.drop(category, axis=1)
     X,y = utils.shuffle(X,y)
     return X,y
 
+#the below X,y parsing is for cross validation
 def nearby_station(df, station, category):
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
     nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
-    nearby_df = clean_data(clean_data, category)
+    nearby_df, map_dict = clean_data1(nearby_df, category)
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
     X,y = utils.shuffle(X,y)
