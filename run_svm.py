@@ -7,10 +7,12 @@ Date:
 # imports from python libraries
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
-from sklearn.model_selection import StratifiedKFold, GridSearchCV
+from sklearn.model_selection import StratifiedKFold, GridSearchCV, \
+     validation_curve
 from sklearn.metrics import confusion_matrix
 from collections import OrderedDict
 
@@ -24,20 +26,26 @@ def main():
 
     category = "PRCP2"
     # Toggle these values to test different functions
-    ONE_STATION, NEARBY_STATION = True, False
+    ONE_STATION, NEARBY_STATION = False, True
 
     if ONE_STATION:
         print("Run SVM on one station")
         X_train, X_test, y_train, y_test, map_dict = one_station_split(
             df, 'USC00057936', category)
-        #X,y = one_station(df, 'USC00057936', category)
+        
+        #for cross validation
+        X,y = one_station(df, 'USC00057936', category)
         #{'C': 10, 'gamma': 0.001}
+        
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
         X_train, X_test, y_train, y_test, map_dict = nearby_station_split(
             df, 'USC00057936', 'Precipitation')
-        #X,y = nearby_station(df, 'USC00057936', category)
+        
+        #for cross validation
+        X,y = nearby_station(df, 'USC00057936', category)
         #{'C': 1, 'gamma': 0.001}
+        
     elif ALL_STATIONS:
         #TODO
         pass
@@ -53,7 +61,8 @@ def main():
     print(train_score)
     print(test_score)
     #heatmap(svc_clf, X_test, y_test)
-
+    """
+    #create normalized confusion matrix
     od = OrderedDict(sorted(map_dict.items()))
     class_names = [str(entry) for entry in list(od.values())]
     y_pred = svc_clf.fit(X_train, y_train).predict(X_test)
@@ -62,8 +71,50 @@ def main():
         for j in range(len(c_matrix)):
             c_matrix[i][j] = round(c_matrix[i][j], 2)
     print_confusion_matrix(c_matrix, class_names)
+    """
+    plot_curves(X,y)
+
+    
 
 #from lab 7
+
+def plot_curves(X,y):
+    """plot validation curves"""
+    train_accuracy = {}
+    test_accuracy = {}
+    param_name='gamma'
+    svm_param_range = np.logspace(-5, 1, 7)
+    train_scores, test_scores = \
+        validation_curve(SVC(), X, y, \
+                        param_name=param_name, param_range=svm_param_range, \
+                        scoring='accuracy')
+    train_scores_mean = np.mean(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    train_accuracy['SVM'] = train_scores_mean
+    test_accuracy['SVM'] = test_scores_mean
+    generate('SVM', \
+        param_name, svm_param_range, train_accuracy, test_accuracy)
+
+    print('\nSVM')
+    print('Gamma, Train Accuracy, Test Accuracy')
+    for i in range(len(svm_param_range)):
+       print(svm_param_range[i], str(train_accuracy['SVM'][i]) + \
+       ', ' + str(test_accuracy['SVM'][i]))
+
+def generate(method, param_name, param_range, \
+        train_accuracy, test_accuracy):
+    """generate learning curves for given arguments (method, etc.)"""
+    plt.title('Validation Curve for '+method)
+    plt.xlabel(param_name)
+    plt.ylabel('Score')
+    #use plt.semilogx when plotting for svm
+    plt.semilogx(param_range, train_accuracy[method], label='Training score', \
+        color='blue', marker='o')
+    plt.semilogx(param_range, test_accuracy[method], label='Testing score', \
+        color='red', marker='o')
+    plt.legend(loc='best')
+    plt.show()
+    
 def accuracy(X, y):
     train_accuracy = {}
     test_accuracy = {}
