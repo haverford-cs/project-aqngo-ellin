@@ -18,9 +18,10 @@ matplolib v 3.1.2
 - Accuracy score: https://github.com/scikit-learn/scikit-learn/blob/bf24c7e3d/sklearn/base.py#L344
 
 
-### 12/17/2019 (2 hrs)
+### 12/17/2019 (3 hrs)
 - Jason:
-- Emily: Determine best hyperparameters for SVC for nearby stations; confusion matrix for one and nearby stations.
+- Emily: Determine best hyperparameters for SVC for nearby stations; \
+  confusion matrix for one and nearby stations; plot validation curves.
 
 ### 12/15/2019 (2 hrs)
 - Jason:
