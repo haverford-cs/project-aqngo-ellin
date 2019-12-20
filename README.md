@@ -5,7 +5,20 @@ This project investigates the performance between SVM and Fully Connected Neural
 
 More information can be found in our presentation slides `FINAL_aqngo_ellin_ML_presentation.pdf`.
 
+## Testing
+To run our models, first install 
+```
+pip3 install -r requirements.txt
+```
+After you have installed all the requirements, you should be able to run both SVM and FC models by the command
+`python3 run_fc.py` or `python3 run_svm.py`. Here's a screenshot of the run:
+
+![Fully connected network demo screenshot](img/demo_screenshot.png "Demo screenshot")
+
+
 ## Lab Notebook
+### 12/20/2019 (2 hours)
+- Finish documentation for the project
 
 ### 12/17/2019 (3 hrs)
 - Jason: Finish generating training and testing sets for nearby stations experiments
