@@ -1,5 +1,5 @@
 """
-Contents: Utils for parsing data
+Contents: Utils for parsing data and plotting confusion matrices
 Authors: Jason Ngo and Emily Lin
 Date: 12/20/19
 """
@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn import utils
 
+
 def one_station_split(df, station, category):
     """
     Parse data for one station prediction
@@ -22,10 +23,11 @@ def one_station_split(df, station, category):
     df, map_dict = clean_data(df, category)
     y = df[category]
     X = df.drop(category, axis=1)
-    X,y = utils.shuffle(X,y)
+    X, y = utils.shuffle(X, y)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test, map_dict
+
 
 def nearby_station_split(df, station, category):
     """
@@ -34,13 +36,14 @@ def nearby_station_split(df, station, category):
     """
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
     nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
-    nearby_df, map_dict = clean_data_nearby(nearby_df, category) 
+    nearby_df, map_dict = clean_data_nearby(nearby_df, category)
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
-    X,y = utils.shuffle(X,y)
+    X, y = utils.shuffle(X, y)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                         random_state=42)
     return X_train, X_test, y_train, y_test, map_dict
+
 
 def one_station(df, station, category):
     """
@@ -52,8 +55,9 @@ def one_station(df, station, category):
 
     y = df[category]
     X = df.drop(category, axis=1)
-    X,y = utils.shuffle(X,y)
-    return X,y
+    X, y = utils.shuffle(X, y)
+    return X, y
+
 
 def nearby_station(df, station, category):
     """
@@ -65,8 +69,9 @@ def nearby_station(df, station, category):
     nearby_df, map_dict = clean_data_nearby(nearby_df, category)
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
-    X,y = utils.shuffle(X,y)
-    return X,y
+    X, y = utils.shuffle(X, y)
+    return X, y
+
 
 def get_k_nearest_stations(df, station, k):
     """
@@ -79,7 +84,7 @@ def get_k_nearest_stations(df, station, k):
     for station_id, station_name in enumerate(df['STATION'].unique()):
         nearby_df = df.query("STATION == '{}'".format(station_name))
         nearby_location = np.array(
-            [nearby_df[element].values[0] for element in ['LON','LAT','ELEV']])
+            [nearby_df[element].values[0] for element in ['LON', 'LAT', 'ELEV']])
         nearby_distance = np.linalg.norm(test_location - nearby_location)
 
         distance_arr.append(nearby_distance)
@@ -88,6 +93,7 @@ def get_k_nearest_stations(df, station, k):
     )[np.argpartition(distance_arr, k)[:k]]
 
     return k_nearest_stations
+
 
 def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     """
@@ -108,7 +114,7 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     Y.columns = ['Precipitation']
 
     df_train[1].columns = ['2STATION', '2LAT', '2LON', '2ELEV', '2PRCP1',
-                           '2TMAX1', '2TMIN1', '2SNOW1','2SNOWD1', '2PRCP2', \
+                           '2TMAX1', '2TMIN1', '2SNOW1', '2SNOWD1', '2PRCP2',
                            'TMAX2', 'TMIN2', 'SNOW2', 'SNOWD2']
     df_train.append(Y)
 
@@ -116,6 +122,7 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     nearby_final = nearby_final.reset_index()
     nearby_final = nearby_final.select_dtypes(exclude=['object'])
     return nearby_final
+
 
 def clean_data(df, category):
     """
@@ -130,6 +137,7 @@ def clean_data(df, category):
     df[category] = df[category].cat.codes
     return df, map_dict
 
+
 def clean_data_nearby(df, category):
     """
     Convert labels from continous to categorical for nearby stations prediction
@@ -140,12 +148,14 @@ def clean_data_nearby(df, category):
     df[category] = df[category].cat.codes
     return df, map_dict
 
+
 def train_normalize(x, train_stats):
     """Normalize data"""
     return (x - train_stats['mean']) / train_stats['std']
 
-def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), \
-    fontsize=14):
+
+def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7),
+                           fontsize=14):
     """
     Prints a confusion matrix as a heatmap.
 
@@ -178,19 +188,22 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), \
     except ValueError:
         raise ValueError("Confusion matrix values must be integers.")
     heatmap.yaxis.set_ticklabels(
-        heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', \
-            fontsize=fontsize)
+        heatmap.yaxis.get_ticklabels(), rotation=0, ha='right',
+        fontsize=fontsize)
     heatmap.xaxis.set_ticklabels(
-        heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', \
-            fontsize=fontsize)
+        heatmap.xaxis.get_ticklabels(), rotation=45, ha='right',
+        fontsize=fontsize)
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.title('Normalized Confusion Matrix')
     plt.show()
 
+
 def plot_train_validation_curve(history):
-    """
-    Plot validation curve
+    """Plot training and validation curves
+
+    Arguments:
+        history {tensorflow history object} -- Training history info
     """
     fig = plt.figure(figsize=(14, 8), dpi=200)
     plt.plot(history.history['accuracy'])

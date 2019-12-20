@@ -3,9 +3,6 @@ Contents: Create and run a fully connected neural network.
 Authors: Jason Ngo and Emily Lin
 Date: 12/20/19
 """
-
-#!/usr/bin/env python
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -33,7 +30,21 @@ def main():
         df = df.sample(frac=1).reset_index(drop=True)
         X_train, X_test, y_train, y_test, map_dict = one_station_split(
             df, 'USC00057936', 'PRCP2')
+    elif NEARBY_STATION:
+        k_nearest_stations = get_k_nearest_stations(df, "USC00057936", 3)
+        nearby_df = merge_k_nearest_stations(
+            df, k_nearest_stations, "USC00057936")
+        df2, map_dict = clean_data(nearby_df, "Precipitation", True)
+        y = nearby_df['Precipitation']
+        X = nearby_df.drop('Precipitation', axis=1)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+                                                            random_state=42)
+        X_train = X_train.drop(
+            ['LAT', 'LON', 'ELEV', '2LAT', '2LON', '2ELEV'], axis=1)
+        X_test = X_test.drop(
+            ['LAT', 'LON', 'ELEV', '2LAT', '2LON', '2ELEV'], axis=1)
 
+    # Normalize the training/testing datasets
     train_stats = X_train.describe()
     train_stats = train_stats.transpose()
     normed_train_data = train_normalize(X_train, train_stats)
@@ -42,7 +53,7 @@ def main():
     model = build_model(len(map_dict))
 
     history = model.fit(normed_train_data.values, y_train.values,
-                        epochs=5, validation_split=0.2,
+                        epochs=150, validation_split=0.2,
                         verbose=0, batch_size=16,
                         callbacks=[tfdocs.modeling.EpochDots()])
 
@@ -51,6 +62,7 @@ def main():
 
     print("\nTest Accuracy: ", test_acc)
 
+    # Get the confusion matrix
     predictions = model.predict(normed_test_data.values)
     predicted_labels = np.array([np.argmax(row) for row in predictions])
 
@@ -69,7 +81,6 @@ def main():
     od = OrderedDict(sorted(map_dict.items()))
     class_names = [str(entry) for entry in list(od.values())]
     print_confusion_matrix(normed_matrix, class_names)
-
 
 
 def build_model(num_classes):

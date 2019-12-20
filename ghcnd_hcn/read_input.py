@@ -1,3 +1,11 @@
+"""Parse the data into a dataframe and then write it to .csv file.
+Note that the data/ folder has been ommited from the Github Repository.
+The folder can be downloaded from NOOA Data Center Online Website
+
+Author: Jason Ngo
+Authors: Jason Ngo and Emily Lin
+"""
+
 import os
 import pandas as pd
 import numpy as np
@@ -5,6 +13,14 @@ from datetime import datetime, date
 
 
 def get_location(station_id):
+    """Given a station_id, return its location
+    
+    Arguments:
+        station_id {str} -- Station ID
+    
+    Returns:
+        [tuple] -- [(lon, lat, elev) of the station]
+    """
     f = open("ghcnd-stations.txt")
     lines = f.readlines()
     f.close()
@@ -17,6 +33,14 @@ def get_location(station_id):
 
 
 def get_source_df(file):
+    """Parse the source data file into a pandas dataframe
+    
+    Arguments:
+        file {str} -- File name for each station
+    
+    Returns:
+        df -- Dataframe for that station
+    """
     f = open("data/"+test_file)
     lines = f.readlines()
     f.close()
@@ -66,6 +90,15 @@ def get_source_df(file):
 
 
 def get_clean_df(src_df_lst):
+    """Given a list of sources dataframes, drop missing values and merge
+    them into a massive dataframe for all the stations
+    
+    Arguments:
+        src_df_lst {lst} -- list of station-by-staion dataframes
+    
+    Returns:
+        df -- a merged dataframe for all the stations
+    """
     out_df_lst = []
     for i, src_dataframe in enumerate(src_df_lst):
         rows_list = []
@@ -93,6 +126,16 @@ def get_clean_df(src_df_lst):
 
 
 def insert_location(clean_df, station_id):
+    """Since the dataframe does not contain station ID, this function inserts
+    three columns into the dataframe to indicate each station's location
+    
+    Arguments:
+        clean_df {df} -- a cleaned dataframe for all the stations
+        station_id {str} -- Station ID
+    
+    Returns:
+        df -- a dataframe with all station information
+    """
     lat, lon, elev = get_location(station_id)
     nrows = clean_df.shape[0]
     clean_df.insert(0, "STATION", [station_id]*nrows)
@@ -118,8 +161,3 @@ if __name__ == "__main__":
         clean_df = insert_location(clean_df, station_id)
 
         clean_df.to_csv("csv/{}.csv".format(station_id), index=False)
-
-
-# test = clean_df.index[0]
-# a = datetime.strptime(test, '%Y-%m-%d').date()
-# a.toordinal()
