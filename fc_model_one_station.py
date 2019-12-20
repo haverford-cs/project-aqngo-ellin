@@ -1,3 +1,9 @@
+"""
+Contents: Create and run a fully connected neural network.
+Authors: Jason Ngo and Emily Lin
+Date: 12/20/19
+"""
+
 #!/usr/bin/env python
 
 import matplotlib.pyplot as plt

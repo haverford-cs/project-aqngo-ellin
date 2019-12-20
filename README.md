@@ -9,12 +9,8 @@ matplolib v 3.1.2
 
 ### References
 - Data splitting: https://medium.com/themlblog/splitting-csv-into-train-and-test-data-1407a063dd74
-- SVR: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html
-- SVR example: https://scikit-learn.org/stable/auto_examples/svm/plot_svm_regression.html#sphx-glr-auto-examples-svm-plot-svm-regression-py
+- SVC: https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
 - FC for regression: https://www.tensorflow.org/tutorials/keras/regression
-- Confusion matrix: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
-- Confusion matrix plot: https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html#sphx-glr-auto-examples-model-selection-plot-confusion-matrix-py
-- Heatmap: https://getaravind.com/blog/confusion-matrix-seaborn-heatmap/
 - Accuracy score: https://github.com/scikit-learn/scikit-learn/blob/bf24c7e3d/sklearn/base.py#L344
 
 

@@ -1,7 +1,7 @@
 """
 Contents: Train and test support vectors for regression
 Authors: Jason Ngo and Emily Lin
-Date:
+Date: 12/20/19
 """
 
 # imports from python libraries
@@ -32,20 +32,18 @@ def main():
         print("Run SVM on one station")
         X_train, X_test, y_train, y_test, map_dict = one_station_split(
             df, 'USC00057936', category)
-        
+
         #for cross validation
         X,y = one_station(df, 'USC00057936', category)
-        #{'C': 10, 'gamma': 0.001}
-        
+
     elif NEARBY_STATION:
         print("Run SVM on nearby stations")
         X_train, X_test, y_train, y_test, map_dict = nearby_station_split(
             df, 'USC00057936', 'Precipitation')
-        
+
         #for cross validation
         X,y = nearby_station(df, 'USC00057936', category)
-        #{'C': 1, 'gamma': 0.001}
-        
+
     elif ALL_STATIONS:
         #TODO
         pass
@@ -74,7 +72,7 @@ def main():
     """
     plot_curves(X,y)
 
-    
+
 
 #from lab 7
 
@@ -114,7 +112,7 @@ def generate(method, param_name, param_range, \
         color='red', marker='o')
     plt.legend(loc='best')
     plt.show()
-    
+
 def accuracy(X, y):
     train_accuracy = {}
     test_accuracy = {}

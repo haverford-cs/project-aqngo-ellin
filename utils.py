@@ -1,7 +1,7 @@
 """
 Contents: Utils for parsing data
 Authors: Jason Ngo and Emily Lin
-Date:
+Date: 12/20/19
 """
 # imports from python libraries
 import pandas as pd
