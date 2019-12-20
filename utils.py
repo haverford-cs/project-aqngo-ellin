@@ -14,8 +14,11 @@ from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 from sklearn import utils
 
 def one_station_split(df, station, category):
+    """
+    Parse data for one station prediction
+    Returns train and test sets as well as a dictionary of labels
+    """
     df = df.query("STATION == '{}'".format(station))
-    # convert continuous values to bins
     df, map_dict = clean_data(df, category)
     y = df[category]
     X = df.drop(category, axis=1)
@@ -25,9 +28,13 @@ def one_station_split(df, station, category):
     return X_train, X_test, y_train, y_test, map_dict
 
 def nearby_station_split(df, station, category):
+    """
+    Parse data for nearby stations prediction
+    Returns train and test sets as well as a dictionary of labels
+    """
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
     nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
-    nearby_df, map_dict = clean_data1(nearby_df, category) #modified clean data func
+    nearby_df, map_dict = clean_data_nearby(nearby_df, category) 
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
     X,y = utils.shuffle(X,y)
@@ -35,28 +42,36 @@ def nearby_station_split(df, station, category):
                                                         random_state=42)
     return X_train, X_test, y_train, y_test, map_dict
 
-#the below X,y parsing is for cross validation
-def one_station(df, station, category): #with cross validation
+def one_station(df, station, category):
+    """
+    Parse data for one station cross validation
+    Returns examples and labels
+    """
     df = df.query("STATION == '{}'".format(station))
-    df, map_dict = clean_data(df, category)   # convert continuous values to bins
+    df, map_dict = clean_data(df, category)
 
     y = df[category]
     X = df.drop(category, axis=1)
     X,y = utils.shuffle(X,y)
     return X,y
 
-#the below X,y parsing is for cross validation
 def nearby_station(df, station, category):
+    """
+    Parse data for nearby stations cross validation
+    Returns examples and labels
+    """
     k_nearest_stations = get_k_nearest_stations(df, station, 3)
     nearby_df = merge_k_nearest_stations(df, k_nearest_stations, station)
-    nearby_df, map_dict = clean_data1(nearby_df, category)
+    nearby_df, map_dict = clean_data_nearby(nearby_df, category)
     y = nearby_df[category]
     X = nearby_df.drop(category, axis=1)
     X,y = utils.shuffle(X,y)
     return X,y
 
-
 def get_k_nearest_stations(df, station, k):
+    """
+    Get k nearest stations to use for nearby stations prediction
+    """
     distance_arr = []
     test_df = df.query("STATION == '{}'".format(station))
     test_location = np.array([test_df[element].values[0]
@@ -64,7 +79,7 @@ def get_k_nearest_stations(df, station, k):
     for station_id, station_name in enumerate(df['STATION'].unique()):
         nearby_df = df.query("STATION == '{}'".format(station_name))
         nearby_location = np.array(
-            [nearby_df[element].values[0] for element in ['LON', 'LAT', 'ELEV']])
+            [nearby_df[element].values[0] for element in ['LON','LAT','ELEV']])
         nearby_distance = np.linalg.norm(test_location - nearby_location)
 
         distance_arr.append(nearby_distance)
@@ -74,8 +89,10 @@ def get_k_nearest_stations(df, station, k):
 
     return k_nearest_stations
 
-
 def merge_k_nearest_stations(df, k_nearest_stations, test_station):
+    """
+    Merge data for k nearest stations to use for nearby stations prediction
+    """
     df_train = []
     df_test = []
     for station in k_nearest_stations:
@@ -91,8 +108,8 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     Y.columns = ['Precipitation']
 
     df_train[1].columns = ['2STATION', '2LAT', '2LON', '2ELEV', '2PRCP1',
-                           '2TMAX1', '2TMIN1', '2SNOW1',
-                           '2SNOWD1', '2PRCP2', 'TMAX2', 'TMIN2', 'SNOW2', 'SNOWD2']
+                           '2TMAX1', '2TMIN1', '2SNOW1','2SNOWD1', '2PRCP2', \
+                           'TMAX2', 'TMIN2', 'SNOW2', 'SNOWD2']
     df_train.append(Y)
 
     nearby_final = pd.concat(df_train, axis=1, join='inner', sort=False)
@@ -100,8 +117,10 @@ def merge_k_nearest_stations(df, k_nearest_stations, test_station):
     nearby_final = nearby_final.select_dtypes(exclude=['object'])
     return nearby_final
 
-
 def clean_data(df, category):
+    """
+    Convert labels from continous to categorical for one station prediction
+    """
     if 'STATION' in df.columns:
         df = df.drop(['STATION'], axis=1)
 
@@ -111,71 +130,36 @@ def clean_data(df, category):
     df[category] = df[category].cat.codes
     return df, map_dict
 
-def clean_data1(df, category): #for nearby stations, don't remove station
+def clean_data_nearby(df, category):
+    """
+    Convert labels from continous to categorical for nearby stations prediction
+    """
     df[category] = pd.qcut(
         df[category], q=45, duplicates='drop').astype('category')
     map_dict = dict(zip(df[category].cat.codes, df[category]))
     df[category] = df[category].cat.codes
     return df, map_dict
 
-
-"""
-For evaluation
-- classifier must be fit already
-"""
-
-
-def matrix(classifier, X_test, y_test):
-    """Create confusion matrix"""
-    print('Confusion Matrix')
-    y_pred = classifier.fit(X_train, y_train).predict(X_test)
-    results = confusion_matrix(y_test, y_pred)  # normalize='true')
-    return results
-
-
-def heatmap(classifier, X_test, y_test):
-    """Create heatmap"""
-    class_names = (set(y_test))
-    titles_options = [  # ("Confusion matrix, without normalization", None),
-        ("Normalized Confusion Matrix", 'true')]
-    for title, normalize in titles_options:
-        disp = plot_confusion_matrix(classifier, X_test, y_test,
-                                     display_labels=class_names,
-                                     cmap=plt.cm.Blues,
-                                     normalize=normalize)
-        disp.ax_.set_title(title)
-        print(title)
-        print(disp.confusion_matrix)
-
-    plt.show()
-
-
-def heatmap2(matrix):
-    """Create heatmap using sns"""
-    sns.heatmap(matrix, annot=True, cbar=False)
-    plt.ylabel('True Label')
-    plt.xlabel('Predicted Label')
-    plt.title('Confusion Matrix')
-    plt.show()
-
-
 def train_normalize(x, train_stats):
+    """Normalize data"""
     return (x - train_stats['mean']) / train_stats['std']
 
-
-def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fontsize=14):
-    """Prints a confusion matrix, as returned by sklearn.metrics.confusion_matrix, as a heatmap.
+def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), \
+    fontsize=14):
+    """
+    Prints a confusion matrix as a heatmap.
 
     Arguments
     ---------
     confusion_matrix: numpy.ndarray
-        The numpy.ndarray object returned from a call to sklearn.metrics.confusion_matrix.
+        The numpy.ndarray object from using sklearn.metrics.confusion_matrix.
         Similarly constructed ndarrays can also be used.
     class_names: list
-        An ordered list of class names, in the order they index the given confusion matrix.
+        An ordered list of class names, in the order of the confusion matrix.
     figsize: tuple
-        A 2-long tuple, the first value determining the horizontal size of the ouputted figure,
-        the second determining the vertical size. Defaults to (10,7).
+        A 2-long tuple, the first value determining the horizontal size
+        of the ouputted figure, the second determining the vertical size.
+        Defaults to (10,7).
     fontsize: int
         Font size for axes labels. Defaults to 14.
 
@@ -194,15 +178,20 @@ def print_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fonts
     except ValueError:
         raise ValueError("Confusion matrix values must be integers.")
     heatmap.yaxis.set_ticklabels(
-        heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', fontsize=fontsize)
+        heatmap.yaxis.get_ticklabels(), rotation=0, ha='right', \
+            fontsize=fontsize)
     heatmap.xaxis.set_ticklabels(
-        heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', fontsize=fontsize)
+        heatmap.xaxis.get_ticklabels(), rotation=45, ha='right', \
+            fontsize=fontsize)
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.title('Normalized Confusion Matrix')
     plt.show()
 
 def plot_train_validation_curve(history):
+    """
+    Plot validation curve
+    """
     fig = plt.figure(figsize=(14, 8), dpi=200)
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
