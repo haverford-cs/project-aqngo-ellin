@@ -16,8 +16,8 @@ matplolib v 3.1.2
 
 ### 12/17/2019 (3 hrs)
 - Jason:
-- Emily: Determine best hyperparameters for SVC for nearby stations; \
-  confusion matrix for one and nearby stations; plot validation curves.
+- Emily: Determine best hyperparameters for SVC for nearby stations;
+  Get confusion matrix for one and nearby stations; plot validation curves.
 
 ### 12/15/2019 (2 hrs)
 - Jason:
@@ -33,17 +33,18 @@ matplolib v 3.1.2
 
 ### 12/5/2019 (1 hr)
 - Jason: Converting training data to contain data for 2 days.
-- Emily: Plotting SVR results for different kernels.
+- Emily: Plot SVR results for different kernels.
 
 ### 12/2/2019 (2 hrs)
 - Jason: Extract data for one station
-- Emily: Split data into train and test;
-  write code for svr models and predictions
+- Emily: Split data into train and test sets;
+  write code for svc models and predictions.
 
 ### 11/28/2019 (5 hrs)
-- Jason: finish cleaning data. The dataset is now stored in `final.csv` with the number of instances `n=1048185` and number of features `p=7`.
+- Jason: finish cleaning data. The dataset is now stored in `final.csv` with
+  the number of instances `n=1048185` and number of features `p=7`.
 
 ### 11/25/2019 (2.5 hrs)
-- Met with Sara to talk about the proposal
 - Jason:
 - Emily: Set up starter files for Support Vector Regression and Neural Network
+  using sklearn and tensorflow documentation.
